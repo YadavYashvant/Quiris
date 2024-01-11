@@ -10,8 +10,15 @@
     "test": "jest"
   },
   "dependencies": {
+    "@gluestack-style/react": "^1.0.33",
+    "@gluestack-ui/themed": "^1.0.35",
     "react": "18.2.0",
-    "react-native": "0.73.2"
+    "react-native": "0.73.2",
+    "react-native-camera": "^4.2.1",
+    "react-native-cupertino-list": "^0.0.8",
+    "react-native-permissions": "^4.0.4",
+    "react-native-qrcode-scanner": "^1.5.5",
+    "react-native-svg": "^13.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -10,6 +10,9 @@ import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
+  AppRegistry,
+  TouchableOpacity,
+  Linking,
   StatusBar,
   StyleSheet,
   Text,
@@ -25,93 +28,92 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { RNCamera, BarCodeReadEvent } from 'react-native-camera';
+import { CupertinoSectionList } from 'react-native-cupertino-list';
 
 function App(): React.JSX.Element {
+  
   const isDarkMode = useColorScheme() === 'dark';
+
+  const onBarCodeRead = (event: BarCodeReadEvent) => {
+    // Extract the URL from the QR code data
+    const { data } = event;
+    
+    // Open the URL
+    if (data) {
+      Linking.openURL(data);
+    }
+  };
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <QRCodeScanner
+        onRead={onBarCodeRead}
+        flashMode={RNCamera.Constants.FlashMode.off}
+        topContent={
+          <Text style={styles.centerText}>
+            Go to{' '}
+            <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
+            your computer and scan the QR code.
+          </Text>
+        }
+        cameraContainerStyle={{backgroundColor: 'transparent',}}
+        bottomContent={
+          <TouchableOpacity style={styles.buttonTouchable}>
+            <Text style={styles.buttonText}>OK. Got it!</Text>
+          </TouchableOpacity>
+        }
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
+  centerText: {
+    flex: 1,
     fontSize: 18,
-    fontWeight: '400',
+    padding: 32,
+    color: '#777'
   },
-  highlight: {
-    fontWeight: '700',
+  textBold: {
+    fontWeight: '500',
+    color: '#000'
+  },
+  buttonText: {
+    fontSize: 21,
+    color: '#fff'
+    //color: 'rgb(0,122,255)'
+  },
+  buttonTouchable: {
+    padding: 16,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    marginTop: 20,
+    backgroundColor: '#333',
+    borderRadius: 20,  
+  },
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+  },
+  preview: {
+    flex: .9,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  camcontainer: {
+    flex: .8,
+    flexDirection: 'column',
+    backgroundColor: 'black',
+    borderRadius: 20,
+    marginHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 20,
   },
 });
 
